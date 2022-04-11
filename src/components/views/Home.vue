@@ -6,23 +6,26 @@
       <input
         type="text"
         v-model="boardName"
-        @keyup.enter="add()"
+        @keyup.enter="addNewBoard()"
         placeholder="Add a new panel"
-        class="inline-block"
+        class="block w-full sm:w-96 mt-5"
       />
 
-      <board-card
-        v-for="(board, index) in boards"
-        :key="index"
-        :name="board.name"
-        :id="board.id"
-      ></board-card>
+      <div class="mt-3 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-2">
+        <board-card
+          v-for="(board, index) in boards"
+          :key="index"
+          :name="board.name"
+          :id="board.id"
+        ></board-card>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import BoardCard from "../BoardCard";
+import shortid from "shortid";
 
 export default {
   name: "home-view",
@@ -32,20 +35,17 @@ export default {
   data() {
     return {
       boardName: "",
-      boards: [
-        {
-          id: 1,
-          name: "Tasks",
-        },
-        {
-          id: 2,
-          name: "Buy",
-        },
-      ],
+      boards: [],
     };
   },
   methods: {
-    add() {},
+    addNewBoard() {
+      if (this.boardName !== "") {
+        const newBoard = { name: this.boardName, id: shortid.generate() };
+        this.boards = [...this.boards, newBoard];
+        this.boardName = "";
+      }
+    },
   },
 };
 </script>

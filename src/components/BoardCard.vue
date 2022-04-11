@@ -12,7 +12,7 @@
 export default {
   name: "board-card",
   props: {
-    id: Number,
+    id: String,
     name: String,
   },
 };

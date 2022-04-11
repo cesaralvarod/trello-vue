@@ -1,6 +1,6 @@
 <template>
   <app-header></app-header>
-  <router-view class="container mx-auto p-4"></router-view>
+  <router-view class="max-w-[1600px] mx-auto py-5 px-4"></router-view>
   <app-footer></app-footer>
 </template>
 
