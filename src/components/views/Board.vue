@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="flex items-center justify-between flex-wrap">
+    <div class="flex items-center justify-between flex-wrap pb-4">
       <h3 class="text-2xl">
         <router-link to="/">My Panels</router-link> > {{ name }}
       </h3>
@@ -51,21 +51,20 @@
     />
 
     <div class="mt-3 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-2">
-      <board-list
-        v-for="(list, index) in boardList"
+      <board-column
+        v-for="(list, index) in lists"
         :name="list.name"
         :id="list.id"
-        :items="list.items"
         :key="index"
-        @newItemList="addNewItemList"
-      ></board-list>
+      ></board-column>
     </div>
   </section>
 </template>
 
 <script>
 import shortid from "shortid";
-import BoardList from "../BoardList.vue";
+import BoardColumn from "../BoardColumn.vue";
+import * as types from "@/store/mutations-types";
 
 export default {
   name: "board-view",
@@ -74,30 +73,38 @@ export default {
     name: String,
   },
   components: {
-    BoardList,
+    BoardColumn,
+  },
+  beforeCreate() {
+    this.$store.commit(types.BOARDS_SET_ACTIVE_BOARD, this.id);
+  },
+  unmounted() {
+    this.$store.commit(types.BOARDS_UNSET_ACTIVE_BOARD);
   },
   data() {
     return {
       listName: "",
-      boardList: [],
+      lists: this.getLists(),
     };
   },
   methods: {
     addNewList() {
+      console.log(this.lists);
       if (this.listName !== "") {
         const newList = {
           id: shortid.generate(),
-          name: this.listName,
-          items: [],
+          name: this.listName.trim(),
+          boardId: this.id,
         };
-        this.boardList = [...this.boardList, newList];
+        this.$store.commit(types.BOARDS_ADD_NEW_LIST, newList);
+        this.lists = this.getLists();
         this.listName = "";
       }
     },
-    addNewItemList({ name, id, listId }) {
-      const newItem = { name, id };
-      let myList = this.boardList.find((list) => list.id === listId);
-      myList.items = [...myList.items, newItem];
+
+    getLists() {
+      this.$store.commit(types.BOARDS_GET_LISTS_BY_BOARD, this.id);
+      return this.$store.state.lists.active;
     },
   },
 };

@@ -7,7 +7,7 @@
         type="text"
         v-model="boardName"
         @keyup.enter="addNewBoard()"
-        placeholder="Add a new panel"
+        placeholder="Add a new board"
         class="block w-full sm:w-96 mt-5"
       />
 
@@ -26,23 +26,28 @@
 <script>
 import BoardCard from "../BoardCard";
 import shortid from "shortid";
+import * as types from "@/store/mutations-types";
 
 export default {
   name: "home-view",
+  beforeCreate() {
+    this.$store.commit(types.BOARDS_CLEAR_LISTS_ACTIVE);
+  },
   components: {
     BoardCard,
   },
   data() {
     return {
       boardName: "",
-      boards: [],
+      boards: this.$store.state.boards.arr,
     };
   },
   methods: {
     addNewBoard() {
       if (this.boardName !== "") {
         const newBoard = { name: this.boardName, id: shortid.generate() };
-        this.boards = [...this.boards, newBoard];
+        this.$store.commit(types.BOARDS_ADD_NEW_BOARD, newBoard);
+        this.boards = this.$store.state.boards.arr;
         this.boardName = "";
       }
     },

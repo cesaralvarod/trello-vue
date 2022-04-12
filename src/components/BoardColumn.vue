@@ -1,14 +1,14 @@
 <template>
   <div class="bg-gray-100 p-5 mt-4 rounded">
-    <h4 class="text-lg">{{ name }}</h4>
+    <h4 class="text-lg">{{ name }} {{ id }}</h4>
 
     <div class="mt-3">
-      <item-list
+      <item-column
         v-for="(item, index) in items"
         :key="index"
         :name="item.name"
         :id="item.id"
-      ></item-list>
+      ></item-column>
     </div>
 
     <input
@@ -42,13 +42,13 @@
 </template>
 
 <script>
-import shortid from "shortid";
-import ItemList from "./ItemList.vue";
+// import shortid from "shortid";
+import ItemColumn from "./ItemColumn.vue";
 
 export default {
-  name: "board-list",
+  name: "board-column",
   components: {
-    ItemList,
+    ItemColumn,
   },
   props: {
     id: String,
@@ -61,11 +61,6 @@ export default {
   methods: {
     addItem() {
       if (this.itemName !== "") {
-        this.$emit("newItemList", {
-          name: this.itemName,
-          id: shortid.generate(),
-          listId: this.id,
-        });
         this.itemName = "";
       }
     },
