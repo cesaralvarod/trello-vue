@@ -1,19 +1,31 @@
-import * as types from "@/store/mutations-types";
+import * as types from "../store/mutations-types";
 
 export default {
-  addNewBoard({ commit }) {
-    commit(types.BOARDS_ADD_NEW_BOARD);
+  addNewBoard({ commit }, { payload }) {
+    commit(types.BOARDS_ADD_NEW_BOARD, { ...payload });
   },
 
-  addNewList({ commit }) {
-    commit(types.BOARDS_ADD_NEW_LIST);
+  setActiveBoard({ commit }, { payload }) {
+    commit(types.BOARDS_SET_ACTIVE_BOARD, payload);
   },
 
-  getListsByBoard({ commit }) {
-    commit(types.BOARDS_GET_LISTS_BY_BOARD);
+  unsetActiveBoard({ commit }) {
+    commit(types.BOARDS_UNSET_ACTIVE_BOARD);
   },
 
-  addNewTask({ commit }) {
-    commit(types.BOARDS_ADD_NEW_TASK);
+  addNewList({ commit }, { payload }) {
+    commit(types.BOARDS_ADD_NEW_LIST, { ...payload });
+  },
+
+  getListsByBoard({ commit }, { payload }) {
+    commit(types.BOARDS_GET_LISTS_BY_BOARD, payload);
+  },
+
+  addNewTask({ commit }, { payload }) {
+    commit(types.BOARDS_ADD_NEW_TASK, { ...payload });
+  },
+
+  getTasks({ commit }) {
+    commit(types.BOARDS_GET_TASKS);
   },
 };

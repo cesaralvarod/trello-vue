@@ -5,7 +5,10 @@
     <p>{{ name }}</p>
 
     <div class="flex justify-end items-center gap-2">
-      <div class="cursor-pointer select-none hover:text-green-500">
+      <button
+        class="cursor-pointer select-none hover:text-green-500"
+        @click="completeTask"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -18,8 +21,11 @@
             clip-rule="evenodd"
           />
         </svg>
-      </div>
-      <div class="cursor-pointer select-none hover:text-red-500">
+      </button>
+      <button
+        class="cursor-pointer select-none hover:text-red-500"
+        @click="deleteTask"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -32,7 +38,7 @@
             clip-rule="evenodd"
           />
         </svg>
-      </div>
+      </button>
     </div>
   </div>
 </template>
@@ -43,6 +49,15 @@ export default {
   props: {
     id: String,
     name: String,
+  },
+  methods: {
+    completeTask() {
+      console.log(this.id);
+    },
+
+    deleteTask() {
+      console.log(this.id);
+    },
   },
 };
 </script>

@@ -32,7 +32,14 @@ export default {
   },
 
   //Task
-  [types.BOARDS_ADD_NEW_TASK](state, { id, name }) {
-    state.tasks.arr = [...state.tasks.arr, { id, name }];
+  [types.BOARDS_ADD_NEW_TASK](state, { id, name, listId, completed }) {
+    state.tasks.arr = [...state.tasks.arr, { id, name, listId, completed }];
+  },
+
+  [types.BOARDS_GET_TASKS](state) {
+    const listIdArr = state.lists.active.map((list) => list.id);
+    state.tasks.active = state.tasks.arr.filter((task) => {
+      if (listIdArr.includes(task.listId)) return task;
+    });
   },
 };

@@ -45,8 +45,10 @@ export default {
   methods: {
     addNewBoard() {
       if (this.boardName !== "") {
-        const newBoard = { name: this.boardName, id: shortid.generate() };
-        this.$store.commit(types.BOARDS_ADD_NEW_BOARD, newBoard);
+        this.$store.dispatch({
+          type: types.BOARDS_ADD_NEW_BOARD,
+          payload: { name: this.boardName, id: shortid.generate() },
+        });
         this.boards = this.$store.state.boards.arr;
         this.boardName = "";
       }

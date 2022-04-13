@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-gray-100 p-5 mt-4 rounded">
-    <h4 class="text-lg">{{ name }} {{ id }}</h4>
+  <div class="bg-gray-100 p-5 mt-4 rounded w-[48%] float-left mr-[2%]">
+    <h4 class="text-lg">{{ name }}</h4>
 
     <div class="mt-3">
       <item-column
@@ -42,8 +42,9 @@
 </template>
 
 <script>
-// import shortid from "shortid";
+import shortid from "shortid";
 import ItemColumn from "./ItemColumn.vue";
+import * as types from "@/store/mutations-types";
 
 export default {
   name: "board-column",
@@ -53,16 +54,35 @@ export default {
   props: {
     id: String,
     name: String,
-    items: Array,
   },
   data() {
-    return { itemName: "" };
+    return {
+      itemName: "",
+      items: this.getItems(),
+    };
   },
   methods: {
     addItem() {
       if (this.itemName !== "") {
+        this.$store.dispatch({
+          type: types.BOARDS_ADD_NEW_TASK,
+          payload: {
+            name: this.itemName,
+            id: shortid.generate(),
+            listId: this.id,
+            completed: false,
+          },
+        });
+        this.items = this.getItems();
         this.itemName = "";
       }
+    },
+
+    getItems() {
+      this.$store.dispatch(types.BOARDS_GET_TASKS);
+      return this.$store.state.tasks.active.filter(
+        (task) => task.listId === this.id
+      );
     },
   },
 };

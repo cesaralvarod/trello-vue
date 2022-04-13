@@ -50,7 +50,7 @@
       class="block w-full sm:w-96 mt-5"
     />
 
-    <div class="mt-3 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-2">
+    <div class="mt-3">
       <board-column
         v-for="(list, index) in lists"
         :name="list.name"
@@ -76,10 +76,13 @@ export default {
     BoardColumn,
   },
   beforeCreate() {
-    this.$store.commit(types.BOARDS_SET_ACTIVE_BOARD, this.id);
+    this.$store.dispatch({
+      type: types.BOARDS_SET_ACTIVE_BOARD,
+      payload: this.id,
+    });
   },
   unmounted() {
-    this.$store.commit(types.BOARDS_UNSET_ACTIVE_BOARD);
+    this.$store.dispatch(types.BOARDS_UNSET_ACTIVE_BOARD);
   },
   data() {
     return {
@@ -89,21 +92,25 @@ export default {
   },
   methods: {
     addNewList() {
-      console.log(this.lists);
       if (this.listName !== "") {
-        const newList = {
-          id: shortid.generate(),
-          name: this.listName.trim(),
-          boardId: this.id,
-        };
-        this.$store.commit(types.BOARDS_ADD_NEW_LIST, newList);
+        this.$store.dispatch({
+          type: types.BOARDS_ADD_NEW_LIST,
+          payload: {
+            id: shortid.generate(),
+            name: this.listName.trim(),
+            boardId: this.id,
+          },
+        });
         this.lists = this.getLists();
         this.listName = "";
       }
     },
 
     getLists() {
-      this.$store.commit(types.BOARDS_GET_LISTS_BY_BOARD, this.id);
+      this.$store.dispatch({
+        type: types.BOARDS_GET_LISTS_BY_BOARD,
+        payload: this.id,
+      });
       return this.$store.state.lists.active;
     },
   },
