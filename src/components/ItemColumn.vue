@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import * as types from "@/store/mutations-types";
+
 export default {
   name: "item-column",
   props: {
@@ -56,8 +58,18 @@ export default {
     },
 
     deleteTask() {
-      console.log(this.id);
+      this.$store.dispatch({
+        type: types.BOARDS_DELETE_TASK,
+        payload: this.id,
+      });
+      this.$emit("setItems");
     },
   },
 };
 </script>
+
+<style scoped>
+.checked {
+  text-decoration: dashed;
+}
+</style>

@@ -31,7 +31,7 @@ import * as types from "@/store/mutations-types";
 export default {
   name: "home-view",
   beforeCreate() {
-    this.$store.commit(types.BOARDS_CLEAR_LISTS_ACTIVE);
+    this.$store.commit(types.BOARDS_UNSET_ACTIVE_BOARD);
   },
   components: {
     BoardCard,

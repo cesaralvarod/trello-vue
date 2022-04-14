@@ -24,6 +24,7 @@
 
         <button
           class="inline-block hover:text-white hover:bg-red-500 p-2 transition rounded w-full font-semibold flex gap-1 justify-center items-center"
+          @click="deleteBoard"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,6 +57,7 @@
         :name="list.name"
         :id="list.id"
         :key="index"
+        @setLists="setLists"
       ></board-column>
     </div>
   </section>
@@ -65,6 +67,8 @@
 import shortid from "shortid";
 import BoardColumn from "../BoardColumn.vue";
 import * as types from "@/store/mutations-types";
+import Home from "./Home.vue";
+import Swal from "sweetalert2";
 
 export default {
   name: "board-view",
@@ -75,20 +79,24 @@ export default {
   components: {
     BoardColumn,
   },
+  data() {
+    return {
+      listName: "",
+      lists: [],
+    };
+  },
   beforeCreate() {
     this.$store.dispatch({
       type: types.BOARDS_SET_ACTIVE_BOARD,
       payload: this.id,
     });
   },
+  created() {
+    this.setLists();
+  },
   unmounted() {
     this.$store.dispatch(types.BOARDS_UNSET_ACTIVE_BOARD);
-  },
-  data() {
-    return {
-      listName: "",
-      lists: this.getLists(),
-    };
+    this.$store.dispatch(types.BOARDS_UNSET_ACTIVE_TASKS);
   },
   methods: {
     addNewList() {
@@ -101,17 +109,45 @@ export default {
             boardId: this.id,
           },
         });
-        this.lists = this.getLists();
+        this.setLists();
         this.listName = "";
       }
     },
 
-    getLists() {
+    setLists() {
       this.$store.dispatch({
-        type: types.BOARDS_GET_LISTS_BY_BOARD,
+        type: types.BOARDS_SET_ACTIVE_LISTS,
         payload: this.id,
       });
-      return this.$store.state.lists.active;
+      this.lists = this.$store.state.lists.active;
+    },
+
+    deleteBoard() {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$store.dispatch({
+            type: types.BOARDS_DELETE_BOARD,
+            payload: this.id,
+          });
+          this.$router.push({ path: "/", component: Home });
+
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your panel has been deleted",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
     },
   },
 };

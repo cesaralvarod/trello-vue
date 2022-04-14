@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 p-5 mt-4 rounded w-[48%] float-left mr-[2%]">
+  <div class="bg-gray-100 p-5 mt-4 rounded md:w-[48%] md:float-left md:mr-[2%]">
     <h4 class="text-lg">{{ name }}</h4>
 
     <div class="mt-3">
@@ -8,6 +8,7 @@
         :key="index"
         :name="item.name"
         :id="item.id"
+        @setItems="setItems"
       ></item-column>
     </div>
 
@@ -22,6 +23,7 @@
     <div class="mt-3">
       <button
         class="block bg-red-500 text-white p-2 rounded w-full font-semibold flex gap-2 justify-center items-center"
+        @click="deleteList"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +60,11 @@ export default {
   data() {
     return {
       itemName: "",
-      items: this.getItems(),
+      items: [],
     };
+  },
+  created() {
+    this.setItems();
   },
   methods: {
     addItem() {
@@ -67,22 +72,30 @@ export default {
         this.$store.dispatch({
           type: types.BOARDS_ADD_NEW_TASK,
           payload: {
-            name: this.itemName,
+            name: this.itemName.trim(),
             id: shortid.generate(),
             listId: this.id,
             completed: false,
           },
         });
-        this.items = this.getItems();
+        this.setItems();
         this.itemName = "";
       }
     },
 
-    getItems() {
-      this.$store.dispatch(types.BOARDS_GET_TASKS);
-      return this.$store.state.tasks.active.filter(
+    setItems() {
+      this.$store.dispatch(types.BOARDS_SET_ACTIVE_TASKS);
+      this.items = this.$store.state.tasks.active.filter(
         (task) => task.listId === this.id
       );
+    },
+
+    deleteList() {
+      this.$store.dispatch({
+        type: types.BOARDS_DELETE_LIST,
+        payload: this.id,
+      });
+      this.$emit("setLists");
     },
   },
 };
